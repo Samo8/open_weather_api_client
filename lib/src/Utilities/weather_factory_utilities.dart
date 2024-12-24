@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
-import 'package:flutter/services.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:open_weather_api_client/src/Utilities/languages.dart';
 import 'package:open_weather_api_client/src/Utilities/location_coords.dart';
 import 'package:open_weather_api_client/src/Utilities/start_end.dart';
@@ -25,7 +24,7 @@ class WeatherFactoryUtilities {
     List<ExcludeField>? exclusions,
     String? cityName,
     LocationCoords? location,
-    StartEnd?       duration,
+    StartEnd? duration,
   }) {
     String tag = _findRequestType(requestType: requestType);
     String url = 'https://api.openweathermap.org/data/2.5/' + '$tag?';
@@ -50,14 +49,12 @@ class WeatherFactoryUtilities {
 
   /// Connectivity checker
   Future<InternetStatus> connectionCheck() async {
-    ConnectivityResult result = await Connectivity().checkConnectivity();
+    final result = await Connectivity().checkConnectivity();
     InternetStatus status = InternetStatus.Undetermined;
-    if (result == ConnectivityResult.mobile ||
-        result == ConnectivityResult.wifi) {
+    if (result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi)) {
       bool internetPresent = false;
       try {
-        final result = await InternetAddress.lookup('example.com')
-            .timeout(maxTimeBeforeTimeout);
+        final result = await InternetAddress.lookup('example.com').timeout(maxTimeBeforeTimeout);
         if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
           internetPresent = true;
         } else {
